@@ -1,0 +1,15 @@
+version: 0.2
+
+phases:
+  build:
+    commands:
+    - echo Build started on `date`
+    - mvn test
+  post_build:
+    commands:
+    - echo Build completed on `date`
+    - mvn package
+    - mv target/echoserver.jar echoserver.jar
+artifacts:
+  files:
+  - echoserver.jar
