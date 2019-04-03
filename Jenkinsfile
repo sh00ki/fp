@@ -1,6 +1,9 @@
 #!/usr/bin/env groovy
 pipeline {
    agent any
+   tools {
+        maven 'M3'
+   }
 
 
    stages {
@@ -12,16 +15,18 @@ pipeline {
          }
       }
 
+      stage ('Initialize') {
+         steps {
+              sh '''
+                  echo "PATH = ${PATH}"
+                  echo "M2_HOME = ${M2_HOME}"
+              '''
+         }
+      }
+
       stage("Build") {
          steps {
-            withMaven(
-                    maven: 'M3',
-                    mavenSettingsConfig: 'my-maven-settings',
-                    mavenLocalRepo: '.repository') {
-
-                  sh "server/mvn clean install"
-
-                }
+            sh "server/mvn clean install"
          }
       }
 
