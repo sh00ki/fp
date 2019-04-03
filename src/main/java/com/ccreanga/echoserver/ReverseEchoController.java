@@ -9,10 +9,10 @@ import java.net.UnknownHostException;
 @RestController
 public class ReverseEchoController {
 
-    System.out.println(InetAddress.getByName("IP_ADDR").getHostName());
-
     private static final String DEFAULT_TEXT = "Hi - you might want to pass the text parameter :)";
+    System.out.println(InetAddress.getByName("IP_ADDR").getHostName());
     @RequestMapping(value="/")
+
     public String reverseEcho(
             @RequestParam(name = "text",required = false,defaultValue = DEFAULT_TEXT) String text) {
 
