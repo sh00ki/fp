@@ -8,7 +8,18 @@ import java.net.UnknownHostException;
 
 @RestController
 public class ReverseEchoController {
+    InetAddress ip;
+    String hostname;
+        try {
+        ip = InetAddress.getLocalHost();
+        hostname = ip.getHostName();
+        System.out.println("Your current IP address : " + ip);
+        System.out.println("Your current Hostname : " + hostname);
 
+    } catch (UnknownHostException e) {
+
+        e.printStackTrace();
+    }
     private static final String DEFAULT_TEXT = "Hi - you might want to pass the text parameter :)";
     @RequestMapping(value="/")
 
