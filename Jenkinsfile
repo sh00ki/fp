@@ -53,6 +53,13 @@ pipeline {
                 }
             }
         }
+        stage('Running jar file') {
+            steps {
+                script {
+                    sh "java -jar target/echoserver.jar"
+                }
+            }
+        }
 
    }
 }
