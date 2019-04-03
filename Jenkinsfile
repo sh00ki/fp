@@ -48,7 +48,6 @@ pipeline {
 
                     rtMaven.run pom: 'pom.xml', goals: 'clean install', buildInfo: buildInfo
 
-                    buildInfo.retention maxBuilds: 10, maxDays: 7, deleteBuildArtifacts: true
                     // Publish build info.
                     server.publishBuildInfo buildInfo
                 }
