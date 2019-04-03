@@ -5,7 +5,7 @@ pipeline {
             maven 'M3'
     }
     environment {
-        MAVEN_HOME = '/var/jenkins_home/tools/hudson.tasks.Maven_MavenInstallation/M3/bin'
+        MAVEN_HOME = '/var/jenkins_home/tools/hudson.tasks.Maven_MavenInstallation/M3'
     }
 
 
