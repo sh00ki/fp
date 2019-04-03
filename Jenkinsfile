@@ -12,21 +12,25 @@ pipeline {
          }
       }
 
-      // Execute when branch = 'master'
       stage("Build") {
          steps {
-            echo 'BASIC WHEN - Master Branch!'
+            withMaven(
+                    maven: 'M3',
+                    mavenSettingsConfig: 'my-maven-settings',
+                    mavenLocalRepo: '.repository') {
+
+                  sh "server/mvn clean install"
+
+                }
          }
       }
 
-      // Expression based when example with AND
       stage('Automation Test') {
          steps {
             echo 'WHEN with AND expression works!'
          }
       }
 
-      // Expression based when example
       stage('Deploy') {
          steps {
             echo 'WHEN with OR expression works!'
