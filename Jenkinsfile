@@ -26,7 +26,9 @@ pipeline {
 
       stage("Build") {
          steps {
-            sh "server/mvn clean install"
+            withMaven(maven: 'M3', mavenSettingsConfig: 'mvn-setting-xml') {
+                    sh "mvn clean install"
+            }
          }
       }
 
