@@ -4,6 +4,9 @@ pipeline {
     tools {
             maven 'M3'
     }
+    environment {
+        MAVEN_HOME = '/var/jenkins_home/tools/hudson.tasks.Maven_MavenInstallation/M3/bin'
+    }
 
 
     stages {
@@ -45,7 +48,7 @@ pipeline {
                     def buildInfo = Artifactory.newBuildInfo()
                     buildInfo.env.capture = true
                     def rtMaven = Artifactory.newMavenBuild()
-                    rtMaven.tool = M3 // Tool name from Jenkins configuration
+                    rtMaven.tool = MAVEN_HOME // Tool name from Jenkins configuration
                     rtMaven.opts = "-Denv=dev"
                     rtMaven.deployer releaseRepo:'libs-release-local', snapshotRepo:'libs-snapshot-local', server: server
                     rtMaven.resolver releaseRepo:'libs-release', snapshotRepo:'libs-snapshot', server: server
