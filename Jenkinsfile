@@ -1,48 +1,61 @@
 #!/usr/bin/env groovy
 pipeline {
-   agent any
-   tools {
-        maven 'M3'
-   }
+    agent any
+    tools {
+            maven 'M3'
+    }
 
 
-   stages {
+    stages {
 
-      // skip a stage while creating the pipeline
-      stage("Code Change") {
-         steps {
-            echo 'This step will never be run'
-         }
-      }
-
-      stage ('Initialize') {
-         steps {
-              sh '''
-                  echo "PATH = ${PATH}"
-                  echo "M2_HOME = ${M2_HOME}"
-              '''
-         }
-      }
-
-      stage("Build") {
-         steps {
-            withMaven(maven: 'M3') {
-                    sh "mvn clean install"
+        // skip a stage while creating the pipeline
+        stage("Code Change") {
+            steps {
+                echo 'This step will never be run'
             }
-         }
-      }
+        }
 
-      stage('Automation Test') {
-         steps {
-            echo 'WHEN with AND expression works!'
-         }
-      }
+        stage ('Initialize') {
+            steps {
+                sh '''
+                    echo "PATH = ${PATH}"
+                    echo "M2_HOME = ${M2_HOME}"
+                '''
+            }
+        }
 
-      stage('Deploy') {
-         steps {
-            echo 'WHEN with OR expression works!'
-         }
-      }
+        stage("Build") {
+            steps {
+                withMaven(maven: 'M3') {
+                        sh "mvn clean install"
+                }
+            }
+        }
+
+        stage('Automation Test') {
+            steps {
+                echo 'WHEN with AND expression works!'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                def server = Artifactory.server "http://ec2-34-247-166-4.eu-west-1.compute.amazonaws.com:8081"
+                def buildInfo = Artifactory.newBuildInfo()
+                buildInfo.env.capture = true
+                def rtMaven = Artifactory.newMavenBuild()
+                rtMaven.tool = M3 // Tool name from Jenkins configuration
+                rtMaven.opts = "-Denv=dev"
+                rtMaven.deployer releaseRepo:'libs-release-local', snapshotRepo:'libs-snapshot-local', server: server
+                rtMaven.resolver releaseRepo:'libs-release', snapshotRepo:'libs-snapshot', server: server
+
+                rtMaven.run pom: 'pom.xml', goals: 'clean install', buildInfo: buildInfo
+
+                buildInfo.retention maxBuilds: 10, maxDays: 7, deleteBuildArtifacts: true
+                // Publish build info.
+                server.publishBuildInfo buildInfo
+            }
+        }
 
    }
 }
