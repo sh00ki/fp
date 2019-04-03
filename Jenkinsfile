@@ -40,20 +40,22 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                def server = Artifactory.server "http://ec2-34-247-166-4.eu-west-1.compute.amazonaws.com:8081"
-                def buildInfo = Artifactory.newBuildInfo()
-                buildInfo.env.capture = true
-                def rtMaven = Artifactory.newMavenBuild()
-                rtMaven.tool = M3 // Tool name from Jenkins configuration
-                rtMaven.opts = "-Denv=dev"
-                rtMaven.deployer releaseRepo:'libs-release-local', snapshotRepo:'libs-snapshot-local', server: server
-                rtMaven.resolver releaseRepo:'libs-release', snapshotRepo:'libs-snapshot', server: server
+                script {
+                    def server = Artifactory.server "http://ec2-34-247-166-4.eu-west-1.compute.amazonaws.com:8081"
+                    def buildInfo = Artifactory.newBuildInfo()
+                    buildInfo.env.capture = true
+                    def rtMaven = Artifactory.newMavenBuild()
+                    rtMaven.tool = M3 // Tool name from Jenkins configuration
+                    rtMaven.opts = "-Denv=dev"
+                    rtMaven.deployer releaseRepo:'libs-release-local', snapshotRepo:'libs-snapshot-local', server: server
+                    rtMaven.resolver releaseRepo:'libs-release', snapshotRepo:'libs-snapshot', server: server
 
-                rtMaven.run pom: 'pom.xml', goals: 'clean install', buildInfo: buildInfo
-
-                buildInfo.retention maxBuilds: 10, maxDays: 7, deleteBuildArtifacts: true
-                // Publish build info.
-                server.publishBuildInfo buildInfo
+                    rtMaven.run pom: 'pom.xml', goals: 'clean install', buildInfo: buildInfo
+    
+                    buildInfo.retention maxBuilds: 10, maxDays: 7, deleteBuildArtifacts: true
+                    // Publish build info.
+                    server.publishBuildInfo buildInfo
+                }
             }
         }
 
