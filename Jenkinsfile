@@ -45,8 +45,6 @@ pipeline {
                     buildInfo.env.capture = true
                     def rtMaven = Artifactory.newMavenBuild()
                     rtMaven.opts = "-Denv=dev"
-                    rtMaven.deployer releaseRepo:'libs-release-local', snapshotRepo:'libs-snapshot-local', server: server
-                    rtMaven.resolver releaseRepo:'libs-release', snapshotRepo:'libs-snapshot', server: server
 
                     rtMaven.run pom: 'pom.xml', goals: 'clean install', buildInfo: buildInfo
 
